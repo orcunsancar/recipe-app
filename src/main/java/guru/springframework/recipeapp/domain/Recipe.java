@@ -17,10 +17,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+
 @Entity
+@Getter
+@Setter
 public class Recipe {
 
 	@Id
