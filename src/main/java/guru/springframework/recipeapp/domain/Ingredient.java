@@ -10,13 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-
+@Data
+@EqualsAndHashCode(exclude = {"recipe"})
 @Entity
-@Getter
-@Setter
 public class Ingredient {
 
 	@Id
