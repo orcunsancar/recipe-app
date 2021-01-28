@@ -19,55 +19,54 @@ import lombok.extern.slf4j.Slf4j;
 public class RecipeServiceImpl implements RecipeService {
 
 	private final RecipeRepository recipeRepository;
-	private final RecipeCommandToRecipe recipeCommandToRecipe;
-	private final RecipeToRecipeCommand recipeToRecipeCommand;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-	public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe,
-			RecipeToRecipeCommand recipeToRecipeCommand) {
-		this.recipeRepository = recipeRepository;
-		this.recipeCommandToRecipe = recipeCommandToRecipe;
-		this.recipeToRecipeCommand = recipeToRecipeCommand;
-	}
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
+        this.recipeRepository = recipeRepository;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
+    }
 
-	@Override
-	public Set<Recipe> getRecipes() {
-		log.debug("I'm in the service");
+    @Override
+    public Set<Recipe> getRecipes() {
+        log.debug("I'm in the service");
 
-		Set<Recipe> recipeSet = new HashSet<>();
-		recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
-		return recipeSet;
-	}
+        Set<Recipe> recipeSet = new HashSet<>();
+        recipeRepository.findAll().iterator().forEachRemaining(recipeSet::add);
+        return recipeSet;
+    }
 
-	@Override
-	public Recipe findById(Long l) {
-		Optional<Recipe> recipeOptional = recipeRepository.findById(l);
+    @Override
+    public Recipe findById(Long l) {
 
-		if (!recipeOptional.isPresent()) {
-			throw new RuntimeException("Recipe Not Found!");
-		}
+        Optional<Recipe> recipeOptional = recipeRepository.findById(l);
 
-		return recipeOptional.get();
-	}
+        if (!recipeOptional.isPresent()) {
+            throw new RuntimeException("Recipe Not Found!");
+        }
 
-	@Override
-	@Transactional
-	public RecipeCommand findCommandById(Long l) {
-		return recipeToRecipeCommand.convert(findById(l));
-	}
+        return recipeOptional.get();
+    }
 
-	@Override
-	@Transactional
-	public RecipeCommand saveRecipeCommand(RecipeCommand command) {
-		Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
+    @Override
+    @Transactional
+    public RecipeCommand findCommandById(Long l) {
+        return recipeToRecipeCommand.convert(findById(l));
+    }
 
-		Recipe savedRecipe = recipeRepository.save(detachedRecipe);
-		log.debug("Saved RecipeId:" + savedRecipe.getId());
-		return recipeToRecipeCommand.convert(savedRecipe);
-	}
+    @Override
+    @Transactional
+    public RecipeCommand saveRecipeCommand(RecipeCommand command) {
+        Recipe detachedRecipe = recipeCommandToRecipe.convert(command);
 
-	@Override
-	public void deleteById(Long idToDelete) {
-		recipeRepository.deleteById(idToDelete);
-		
-	}
+        Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+        log.debug("Saved RecipeId:" + savedRecipe.getId());
+        return recipeToRecipeCommand.convert(savedRecipe);
+    }
+
+    @Override
+    public void deleteById(Long idToDelete) {
+        recipeRepository.deleteById(idToDelete);
+    }
 }
